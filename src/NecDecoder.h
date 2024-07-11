@@ -50,6 +50,7 @@ public:
     bool available();                   // Возвращает true, если корректный пакет прочитан или повторён (isDecoded() + isRepeated())
     uint32_t readPacket();              // Прочитать пакет целиком (адрес + ~адрес + команда + ~команда)
     uint8_t readAddress();              // Прочитать адрес
+    uint16_t readExtAddress();          // Прочитать адрес расширенного протокола NEC
     uint8_t readCommand();              // Прочитать команду
     bool isDecoded();                   // Возвращает true, если пакет успешно декодирован
     bool isRepeated();                  // Возвращает true, если принят флаг повтора команды
