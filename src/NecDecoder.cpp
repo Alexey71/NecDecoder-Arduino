@@ -14,10 +14,10 @@ void NecDecoder::tick(void) {
         else if (time > _NEC_HIGH_MIN && time < _NEC_HIGH_MAX) mode = 1;    // HIGH бит
         if (mode != 2) {                            // HIGH или LOW
             _buffer = _buffer << 1 | mode;          // пишем в буфер
-            if (mode) _parity = !_parity;           // чётность
+            if (mode && _counter > 15) _parity = !_parity;           // чётность
             if (++_counter == 32) {                 // если приняли 32 бита
                 if (_parity) return;                // чётность не совпала - пакет битый
-                if (((_buffer >> 8) & _buffer) & 0xFF00FF) return;  // пакет битый
+                if (((_buffer >> 8) & _buffer) & 0xFF) return;  // пакет битый
                 _packet = _buffer;                  // перемещаем пакет из буфера в дату
                 _decoded = true;                    // флаг успешного приема пакета
                 _repeats = 0;                       // обнуляем счётчик повторов
@@ -74,6 +74,10 @@ uint8_t NecDecoder::readInvCommand() {
 
 uint8_t NecDecoder::readInvAddress() {
     return ((uint32_t)_packet >> 16 & 0xFF);
+}
+
+uint16_t NecDecoder::readExtAddress() {
+    return ((uint32_t)_packet >> 16);
 }
 
 bool NecDecoder::addressIsValid() {
